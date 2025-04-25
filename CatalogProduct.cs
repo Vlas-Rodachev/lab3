@@ -28,11 +28,11 @@ namespace lab3
                         {
                             Product product = new Product
                             {
-                                Id = reader.ReadInt32(),
+                                Id = reader.ReadUInt32(),
                                 Name = reader.ReadString(),
                                 Category = reader.ReadString(),
                                 Price = reader.ReadDecimal(),
-                                StockQuantity = reader.ReadInt32(),
+                                StockQuantity = reader.ReadUInt32(),
                                 ProductionDate = DateTime.FromBinary(reader.ReadInt64()),
                                 IsAvailable = reader.ReadBoolean()
                             };
@@ -132,13 +132,25 @@ namespace lab3
         // Получить среднюю цену продуктов
         public decimal GetAveragePrice()
         {
-            return products.Any() ? products.Average(p => p.Price) : 0;
+            if (!products.Any())
+            {
+                return 0;
+            }
+
+            var prices = from p in products
+                         select p.Price;
+
+            return prices.Average();
         }
 
         // Получить самый старый продукт
         public Product GetOldestProduct()
         {
-            return products.OrderBy(p => p.ProductionDate).FirstOrDefault();
+            var orderedProducts = from p in products
+                                  orderby p.ProductionDate
+                                  select p;
+
+            return orderedProducts.FirstOrDefault();
         }
     }
 }

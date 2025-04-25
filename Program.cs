@@ -36,42 +36,34 @@ class Program
             Console.WriteLine("5. Выход");
             Console.Write("Выберите действие: ");
 
-            // Проверка коректности ввода
-            if (!int.TryParse(Console.ReadLine(), out int choice))
-            {
-                Console.WriteLine("Неверный ввод. Нажмите любую клавишу для продолжения...");
-                Console.ReadKey();
-                continue;
-            }
 
-            try
-            {
-                switch (choice)
-                {
-                    case 1:
-                        Console.WriteLine("\nВсе продукты:");
-                        catalog.ViewAllProducts();
-                        break;
-                    case 2:
-                        AddProductMenu(catalog);
-                        break;
-                    case 3:
-                        RemoveProductMenu(catalog);
-                        break;
-                    case 4:
-                        QueryMenu(catalog);
-                        break;
-                    case 5:
-                        return;
-                    default:
-                        Console.WriteLine("Неверный выбор. Попробуйте снова.");
-                        break;
-                }
+            int choice = IntInputValidator.GetValidIntInput();
+            if (choice == 1) {
+                Console.WriteLine("\nВсе продукты:");
+                catalog.ViewAllProducts();
             }
-            catch (Exception ex)
+            else if (choice == 2)
             {
-                Console.WriteLine($"Произошла ошибка: {ex.Message}");
+                AddProductMenu(catalog);
             }
+            else if (choice == 3)
+            { 
+                RemoveProductMenu(catalog);
+            }
+            else if (choice == 4)
+            {
+                QueryMenu(catalog);
+            }
+            else if (choice == 5)
+            {
+                return;
+            }
+            else 
+            { 
+                Console.WriteLine("Неверный выбор. Попробуйте снова.");
+            }
+         
+
 
             Console.WriteLine("\nНажмите любую клавишу для продолжения...");
             Console.ReadKey();
@@ -84,7 +76,7 @@ class Program
         Console.WriteLine("\nДобавление нового продукта:");
 
         Console.Write("ID: ");
-        int id = int.Parse(Console.ReadLine());
+        uint id = uint.Parse(Console.ReadLine());
 
         Console.Write("Название: ");
         string name = Console.ReadLine();
@@ -96,7 +88,7 @@ class Program
         decimal price = decimal.Parse(Console.ReadLine());
 
         Console.Write("Количество на складе: ");
-        int stock = int.Parse(Console.ReadLine());
+        uint stock = uint.Parse(Console.ReadLine());
 
         Console.Write("Дата производства (дд.мм.гггг): ");
         DateTime date = DateTime.ParseExact(Console.ReadLine(), "dd.MM.yyyy", null);
