@@ -20,7 +20,7 @@ namespace lab3
             Id = id;
             Name = name;
             Category = category;
-            Price = price;
+            Price = Math.Abs(price);
             StockQuantity = stockQuantity;
             ProductionDate = productionDate;
             IsAvailable = isAvailable;
