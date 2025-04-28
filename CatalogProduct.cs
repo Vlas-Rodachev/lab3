@@ -1,12 +1,20 @@
-﻿
+﻿using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace lab3
 {
+    /// <summary>
+    /// класс для работы с Product
+    /// </summary>
     public class ProductCatalog
     {
         private List<Product> products;
         private readonly string filePath;
 
+        /// <summary>
+        /// конструктор 
+        /// </summary>
+        /// <param name="path">путь к файлу</param>
         public ProductCatalog(string path)
         {
             filePath = path;
@@ -14,6 +22,12 @@ namespace lab3
         }
 
         // Загрузка данных из файла
+        /// <summary>
+        /// загрузка данных из файла
+        /// </summary>
+        /// <exception>
+        /// если файл невозможно открыть
+        ///</exception>
         public void LoadData()
         {
             products = new List<Product>();
@@ -26,16 +40,16 @@ namespace lab3
                         int count = reader.ReadInt32();
                         for (int i = 0; i < count; i++)
                         {
-                            Product product = new Product
-                            {
-                                Id = reader.ReadUInt32(),
-                                Name = reader.ReadString(),
-                                Category = reader.ReadString(),
-                                Price = reader.ReadDecimal(),
-                                StockQuantity = reader.ReadUInt32(),
-                                ProductionDate = DateTime.FromBinary(reader.ReadInt64()),
-                                IsAvailable = reader.ReadBoolean()
-                            };
+                            uint id = reader.ReadUInt32();
+                            string name = reader.ReadString();
+                            string category = reader.ReadString();
+                            decimal price = reader.ReadDecimal();
+                            uint stockQuantity = reader.ReadUInt32();
+                            DateTime productionDate = DateTime.FromBinary(reader.ReadInt64());
+                            bool isAvailable = reader.ReadBoolean();
+
+                            // Используем конструктор вместо прямого присваивания
+                            Product product = new Product(id, name, category, price, stockQuantity, productionDate, isAvailable);
                             products.Add(product);
                         }
                     }
@@ -48,6 +62,12 @@ namespace lab3
         }
 
         // перезапись файла с продуктами
+        /// <summary>
+        /// сохранение продуктов в файл
+        /// </summary>
+        /// <exception>
+        /// если файл невозможно открыть
+        ///</exception>
         public void SaveData()
         {
             try
@@ -74,6 +94,10 @@ namespace lab3
         }
 
         // Добавление продукта
+        /// <summary>
+        /// добавление продукта в список и файл
+        /// </summary>
+        /// <param name="product">объект, который необходимо добавить</param>
         public void AddProduct(Product product)
         {
             if (products.Any(p => p.Id == product.Id))
@@ -87,6 +111,10 @@ namespace lab3
         }
 
         // Удаление продукта по ID
+        /// <summary>
+        /// Удаление продукта по ID
+        /// </summary>
+        /// <param name="id">id продукта который необходимо удалить</param>
         public void RemoveProduct(int id)
         {
             var product = products.FirstOrDefault(p => p.Id == id);
@@ -103,6 +131,9 @@ namespace lab3
         }
 
         // Просмотр всех продуктов
+        /// <summary>
+        /// вывод всех продуктов на экран
+        /// </summary>
         public void ViewAllProducts()
         {
             if (products.Count == 0)
@@ -118,18 +149,32 @@ namespace lab3
         }
 
         // Получить все продукты определенной категории
+        /// <summary>
+        /// получение продуктов определенной категории
+        /// </summary>
+        /// <param name="category">строка с названием категории</param>
+        /// <returns>список продуктов</returns>
         public List<Product> GetProductsByCategory(string category)
         {
             return products.Where(p => p.Category.Equals(category, StringComparison.OrdinalIgnoreCase)).ToList();
         }
 
         // Получить все продукты с количеством на складе меньше указанного
+        /// <summary>
+        /// возвращает количество продуктов меньше указанного
+        /// </summary>
+        /// <param name="threshold">граничное количество продуктов</param>
+        /// <returns>список продуктов</returns>
         public List<Product> GetProductsWithLowStock(int threshold)
         {
             return products.Where(p => p.StockQuantity < threshold).ToList();
         }
 
         // Получить среднюю цену продуктов
+        /// <summary>
+        /// возвращает среднюю цену продуктов
+        /// </summary>
+        /// <returns>число с плавающей точкой</returns>
         public decimal GetAveragePrice()
         {
             if (!products.Any())
@@ -144,6 +189,10 @@ namespace lab3
         }
 
         // Получить самый старый продукт
+        /// <summary>
+        /// возращает самый старый продукт
+        /// </summary>
+        /// <returns>объект Product</returns>
         public Product GetOldestProduct()
         {
             var orderedProducts = from p in products

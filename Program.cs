@@ -34,7 +34,6 @@ class Program
             Console.WriteLine("3. Удалить продукт");
             Console.WriteLine("4. Запросы к каталогу");
             Console.WriteLine("5. Выход");
-            Console.Write("Выберите действие: ");
 
 
             int choice = IntInputValidator.GetValidIntInput();
